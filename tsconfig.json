@@ -3,6 +3,7 @@
   "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tsconfig.web.json" }],
   "compilerOptions": {
     "baseUrl": ".",
+    "target": "ES6",
     "paths": {
       "@shared/*": ["src/shared/*"],
       "@ui/*": ["src/renderer/src/ui/*"],

@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
-import { ThemeSwitcher } from "./ThemeSwitcher";
+import { ThemeSwitcher } from './ThemeSwitcher';
 
 export function Header() {
   return (

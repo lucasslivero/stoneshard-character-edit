@@ -1,7 +1,8 @@
-import { Header } from "@ui/components/Header";
-import { Outlet } from "react-router-dom";
+import { Outlet } from 'react-router-dom';
 
-export function AuthLayout() {
+import { Header } from '@ui/components/Header';
+
+export function MainLayout() {
   return (
     <div className="flex h-full w-full flex-col">
       <Header />

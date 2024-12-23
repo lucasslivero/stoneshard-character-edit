@@ -5,7 +5,7 @@ import { app, BrowserWindow, shell } from 'electron';
 
 import icon from '../../resources/icon.png?asset';
 
-import { createIpcHandler } from './ipcHandlers';
+import { createIpcHandler } from './api';
 
 function createWindow(): void {
   // Create the browser window.
@@ -29,6 +29,8 @@ function createWindow(): void {
     mainWindow.show();
   });
 
+  mainWindow.webContents.openDevTools({ mode: 'right' });
+
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url);
     return { action: 'deny' };
@@ -48,7 +50,7 @@ app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron');
 
   app.on('browser-window-created', (_, window) => {
-    optimizer.watchWindowShortcuts(window);
+    optimizer.watchWindowShortcuts(window, { escToCloseWindow: true, zoom: false });
   });
 
   createWindow();

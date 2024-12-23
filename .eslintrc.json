@@ -21,8 +21,7 @@
   ],
   "plugins": ["@typescript-eslint"],
   "rules": {
-    "no-console": "off",
-    // "no-console": ["error", { "allow": ["error"] }],
+    "no-restricted-syntax": "off",
     "@typescript-eslint/no-explicit-any": ["error", { "ignoreRestArgs": true }],
     "no-continue": "off",
     "jsx-a11y/click-events-have-key-events": "off",
@@ -62,6 +61,15 @@
           "regex": "^I[A-Z]",
           "match": true
         }
+      }
+    ],
+    "lines-between-class-members": [
+      "error",
+      {
+        "enforce": [
+          { "blankLine": "never", "prev": "field", "next": "field" },
+          { "blankLine": "always", "prev": "*", "next": "method" }
+        ]
       }
     ]
   }

@@ -6,9 +6,15 @@ import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 export default defineConfig({
   main: {
     plugins: [externalizeDepsPlugin()],
+    resolve: {
+      alias: {
+        '@shared': resolve('src/shared'),
+      },
+    },
   },
   preload: {
     plugins: [externalizeDepsPlugin()],
+    // Sandboxed preload scripts can't use ESM imports
     build: {
       rollupOptions: {
         output: {
@@ -21,7 +27,6 @@ export default defineConfig({
     resolve: {
       alias: {
         '@shared': resolve('src/shared'),
-        '@renderer': resolve('src/renderer/src'),
         '@ui': resolve('src/renderer/src/ui'),
         '@shadcn': resolve('src/renderer/src/ui/components/ui'),
         '@app': resolve('src/renderer/src/app'),

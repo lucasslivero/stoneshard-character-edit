@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ipcRenderer } from 'electron';
 
-const BrowserApis = ['getSaves'];
+const BrowserApis = ['getSaves', 'openFileDialog', 'getCharacterSaveData'];
 
 type ApiFromHandlers<T extends Record<string, (...args: any[]) => any>> = {
   [K in keyof T]: (
