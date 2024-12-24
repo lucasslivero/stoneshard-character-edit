@@ -10,7 +10,16 @@ export const formSchema = z.object({
   statsPoints: z.number().min(0),
   level: z.number().min(0),
   xp: z.number().min(0),
-  abilities: z.array(z.object({ skillName: z.string() })),
+  abilities: z.array(
+    z.object({
+      skillName: z.string(),
+      isActive: z.boolean(),
+      points: z.number(),
+      isUnlocked: z.boolean(),
+      additionalPoints: z.number(),
+      skillIndex: z.number(),
+    }),
+  ),
 });
 
 export type FormSchema = z.infer<typeof formSchema>;
