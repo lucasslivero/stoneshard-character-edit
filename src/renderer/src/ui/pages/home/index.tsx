@@ -2,13 +2,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { SearchIcon, Trash2Icon } from 'lucide-react';
 import { ChangeEvent, Fragment, useCallback, useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { toast } from 'sonner';
 
 import { cn } from '@app/libs/utils';
 import charactersImages from '@assets/characters';
 import { CharacterData } from '@shared/entities/CharacterData';
 import { CharacterSave } from '@shared/entities/CharacterSave';
 import { CharactersTree } from '@shared/entities/CharactersTree';
+import { formSchema, FormSchema } from '@shared/types/Form';
 import { AbilityDialog } from '@ui/components/AbilityDialog';
 import {
   Accordion,
@@ -37,20 +38,7 @@ import {
   TooltipTrigger,
 } from '@ui/components/ui/tooltip';
 
-const formSchema = z.object({
-  strength: z.number().min(0),
-  agility: z.number().min(0),
-  perception: z.number().min(0),
-  vitality: z.number().min(0),
-  willpower: z.number().min(0),
-  abilityPoints: z.number().min(0),
-  statsPoints: z.number().min(0),
-  level: z.number().min(0),
-  xp: z.number().min(0),
-  abilities: z.array(z.object({ skillName: z.string() })),
-});
-
-const STATUS_FORM: { key: keyof Omit<z.infer<typeof formSchema>, 'abilities'>; label: string }[] = [
+const STATUS_FORM: { key: keyof Omit<FormSchema, 'abilities'>; label: string }[] = [
   { key: 'strength', label: 'strength' },
   { key: 'agility', label: 'agility' },
   { key: 'perception', label: 'perception' },
@@ -76,7 +64,7 @@ export function Home() {
     data: CharacterData;
   } | null>(null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     values: {
       strength: saveData?.data.status.strength || 0,
@@ -144,8 +132,16 @@ export function Home() {
     setSearch(value);
   }
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log(data);
+  async function onSubmit(data: FormSchema) {
+    const result = await window.api.newSave(
+      savesDirPath,
+      saveData!.characterDir,
+      saveData!.saveName,
+      data,
+    );
+    if (result) {
+      toast.success('Save created successfully');
+    }
   }
 
   useEffect(() => {

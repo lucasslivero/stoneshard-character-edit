@@ -14,7 +14,7 @@ export class CharacterStatus {
   constructor(data: ICharacterDataMap) {
     this.strength = data.STR;
     this.agility = data.AGL;
-    this.perception = data.AGL;
+    this.perception = data.PRC;
     this.vitality = data.Vitality;
     this.willpower = data.WIL;
     this.abilityPoints = data.AP;

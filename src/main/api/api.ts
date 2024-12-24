@@ -8,6 +8,7 @@ import { CharacterData } from '@shared/entities/CharacterData';
 import { CharacterSave } from '@shared/entities/CharacterSave';
 import { CharactersTree } from '@shared/entities/CharactersTree';
 import { ICharacterSaveFile } from '@shared/types/CharacterDataFile';
+import { FormSchema } from '@shared/types/Form';
 
 import { FileManager } from './FileManager';
 
@@ -108,4 +109,34 @@ async function getCharacterSaveData(saveRootDir: string, charDir: string, saveNa
   return new CharacterData(data);
 }
 
-export { getCharacterSaveData, getSaves, openFileDialog };
+function modifyData(fileContent: string, data: FormSchema): string {
+  const characterData: ICharacterSaveFile = JSON.parse(fileContent);
+  characterData.characterDataMap.Vitality = data.vitality;
+  characterData.characterDataMap.STR = data.strength;
+  characterData.characterDataMap.AGL = data.agility;
+  characterData.characterDataMap.PRC = data.perception;
+  characterData.characterDataMap.WIL = data.willpower;
+  characterData.characterDataMap.AP = data.abilityPoints;
+  characterData.characterDataMap.SP = data.statsPoints;
+  characterData.characterDataMap.LVL = data.level;
+  characterData.characterDataMap.XP = data.xp;
+  for (let i = 0; i < characterData.skillsDataMap.skillsAllDataList.length; i += 5) {
+    const skillName = characterData.skillsDataMap.skillsAllDataList[i] as string;
+    const hasItem = !!data.abilities.find((item) => item.skillName === skillName);
+    characterData.skillsDataMap.skillsAllDataList[i + 1] = hasItem;
+  }
+  return JSON.stringify(characterData);
+}
+
+async function newSave(saveRootDir: string, charDir: string, saveName: string, data: FormSchema) {
+  const path = join(saveRootDir, DEFAULT_CHARACTER_PATH_NAME, charDir, saveName, 'data.sav');
+  const content = FileManager.readFile(path);
+  if (!content) {
+    return false;
+  }
+  const newFileContent = modifyData(content, data);
+  const success = await FileManager.saveFile(newFileContent, path);
+  return success;
+}
+
+export { getCharacterSaveData, getSaves, newSave, openFileDialog };

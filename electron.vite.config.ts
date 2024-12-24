@@ -14,6 +14,11 @@ export default defineConfig({
   },
   preload: {
     plugins: [externalizeDepsPlugin()],
+    resolve: {
+      alias: {
+        '@shared': resolve('src/shared'),
+      },
+    },
     // Sandboxed preload scripts can't use ESM imports
     build: {
       rollupOptions: {
