@@ -20,13 +20,8 @@ export class CharacterData {
     for (let i = 0; i < data.skillsDataMap.skillsAllDataList.length; i += 5) {
       const skillName = data.skillsDataMap.skillsAllDataList[i] as string;
       const isActive = data.skillsDataMap.skillsAllDataList[i + 1] as boolean;
-      const points = data.skillsDataMap.skillsAllDataList[i + 2] as number;
-      const isUnlocked = data.skillsDataMap.skillsAllDataList[i + 3] as boolean;
-      const additionalPoints = data.skillsDataMap.skillsAllDataList[i + 4] as number;
-      const skillIndex = i;
-      this.abilities.push(
-        new CharacterAbility(skillName, isActive, points, isUnlocked, additionalPoints, skillIndex),
-      );
+      const isLocked = data.skillsDataMap.skillsAllDataList[i + 3] as boolean;
+      this.abilities.push(new CharacterAbility(skillName, isActive, isLocked));
     }
   }
 }

@@ -118,12 +118,13 @@ function modifyData(fileContent: string, data: FormSchema): string {
   characterData.characterDataMap.WIL = data.willpower;
   characterData.characterDataMap.AP = data.abilityPoints;
   characterData.characterDataMap.SP = data.statsPoints;
-  characterData.characterDataMap.LVL = data.level;
-  characterData.characterDataMap.XP = data.xp;
   for (let i = 0; i < characterData.skillsDataMap.skillsAllDataList.length; i += 5) {
-    const skillName = characterData.skillsDataMap.skillsAllDataList[i] as string;
-    const hasItem = !!data.abilities.find((item) => item.skillName === skillName);
-    characterData.skillsDataMap.skillsAllDataList[i + 1] = hasItem;
+    const skillId = characterData.skillsDataMap.skillsAllDataList[i] as string;
+    const hasItem = !!data.abilities.find((item) => item.skillId === skillId);
+    characterData.skillsDataMap.skillsAllDataList[i + 1] = hasItem; // true == active | false == inactive
+    if (hasItem) {
+      characterData.skillsDataMap.skillsAllDataList[i + 3] = !hasItem; //  false == unlocked | true == locked
+    }
   }
   return JSON.stringify(characterData);
 }
@@ -139,4 +140,19 @@ async function newSave(saveRootDir: string, charDir: string, saveName: string, d
   return success;
 }
 
-export { getCharacterSaveData, getSaves, newSave, openFileDialog };
+async function unlockSkills(saveRootDir: string, charDir: string, saveName: string) {
+  const path = join(saveRootDir, DEFAULT_CHARACTER_PATH_NAME, charDir, saveName, 'data.sav');
+  const content = FileManager.readFile(path);
+  if (!content) {
+    return false;
+  }
+  const data: ICharacterSaveFile = JSON.parse(content);
+  for (let i = 0; i < data.skillsDataMap.skillsAllDataList.length; i += 5) {
+    data.skillsDataMap.skillsAllDataList[i + 3] = false;
+  }
+  const newFileContent = JSON.stringify(data);
+  const success = await FileManager.saveFile(newFileContent, path);
+  return success;
+}
+
+export { getCharacterSaveData, getSaves, newSave, openFileDialog, unlockSkills };

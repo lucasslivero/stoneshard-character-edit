@@ -4,6 +4,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
+import MissingSkillIcon from '@assets/skills/missing.png';
 import { CharacterAbility } from '@shared/entities/CharacterAbility';
 import { CharacterData } from '@shared/entities/CharacterData';
 import { CharacterSave } from '@shared/entities/CharacterSave';
@@ -25,8 +26,6 @@ const STATUS_FORM: { key: keyof Omit<FormSchema, 'abilities'>; label: string }[]
   { key: 'willpower', label: 'willpower' },
   { key: 'abilityPoints', label: 'ability points' },
   { key: 'statsPoints', label: 'stats points' },
-  { key: 'level', label: 'level' },
-  { key: 'xp', label: 'xp' },
 ];
 
 export function CharacterDialog({
@@ -59,8 +58,6 @@ export function CharacterDialog({
       willpower: characterData?.status.willpower || 0,
       abilityPoints: characterData?.status.abilityPoints || 0,
       statsPoints: characterData?.status.statsPoints || 0,
-      level: characterData?.status.level || 0,
-      xp: characterData?.status.xp || 0,
       abilities: characterData?.abilities.filter((ability) => ability.isActive) || [],
     },
   });
@@ -72,9 +69,11 @@ export function CharacterDialog({
 
   function handleAddSkill(data: CharacterAbility) {
     abilities.append(data);
+    setSearch('');
   }
   function handleRemoveSkill(index: number) {
     abilities.remove(index);
+    setSearch('');
   }
 
   function handleSearch(event: ChangeEvent<HTMLInputElement>) {
@@ -93,6 +92,16 @@ export function CharacterDialog({
     if (result) {
       toast.success('Save created successfully');
       onClose(null, null, false);
+    } else {
+      toast.error('Error creating save');
+    }
+  }
+
+  async function handleUnlockAllSkills() {
+    const result = await window.api.unlockSkills(savesDirPath, characterDir, saveName);
+    if (result) {
+      toast.success('Save created successfully');
+      onClose(null, null, false);
     }
   }
 
@@ -105,6 +114,7 @@ export function CharacterDialog({
       main();
     }
   }, [open, savesDirPath, characterDir, saveName]);
+
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="flex h-full w-full max-w-none flex-col gap-3 p-3">
@@ -189,6 +199,14 @@ export function CharacterDialog({
                         className="h-5 w-auto p-0 px-1 text-sm"
                         variant="secondary"
                         type="button"
+                        onClick={() => handleUnlockAllSkills()}
+                      >
+                        Unlock all Skills
+                      </Button>
+                      <Button
+                        className="h-5 w-auto p-0 px-1 text-sm"
+                        variant="secondary"
+                        type="button"
                         onClick={() =>
                           abilities.replace(
                             characterData.abilities.filter((ability) => ability.isActive) || [],
@@ -214,7 +232,9 @@ export function CharacterDialog({
                           <span>Active</span>
                           <ScrollArea className="h-full w-full pr-1">
                             {abilities.fields
-                              .filter((item) => item.skillName.includes(search))
+                              .filter((item) =>
+                                item.skillName.toLowerCase().includes(search.toLowerCase()),
+                              )
                               .map((ability, index) => (
                                 <div
                                   className="flex w-full items-center justify-between gap-1 border-b p-1"
@@ -222,18 +242,24 @@ export function CharacterDialog({
                                 >
                                   <img
                                     className="h-9 w-9"
-                                    src="src/assets/skills/missing.png"
+                                    src={
+                                      ability.iconPath
+                                        ? `src/assets/skills/${ability.iconPath}`
+                                        : MissingSkillIcon
+                                    }
                                     alt="Missing Skill Icon"
                                   />
                                   <span className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
                                     {ability.skillName}
                                   </span>
-                                  <div className="h-5 w-5">
-                                    <Trash2Icon
-                                      className="h-5 w-5 cursor-pointer text-red-600"
-                                      onClick={() => handleRemoveSkill(index)}
-                                    />
-                                  </div>
+                                  {!ability.immutable && (
+                                    <div className="h-5 w-5">
+                                      <Trash2Icon
+                                        className="h-5 w-5 cursor-pointer text-red-600"
+                                        onClick={() => handleRemoveSkill(index)}
+                                      />
+                                    </div>
+                                  )}
                                 </div>
                               ))}
                           </ScrollArea>
@@ -247,7 +273,8 @@ export function CharacterDialog({
                                 return (
                                   !abilities.fields.find(
                                     (item) => item.skillName === ability.skillName,
-                                  ) && ability.skillName.includes(search)
+                                  ) &&
+                                  ability.skillName.toLowerCase().includes(search.toLowerCase())
                                 );
                               })
                               .map((ability) => (
@@ -257,7 +284,11 @@ export function CharacterDialog({
                                 >
                                   <img
                                     className="h-9 w-9"
-                                    src="src/assets/skills/missing.png"
+                                    src={
+                                      ability.iconPath
+                                        ? `src/assets/skills/${ability.iconPath}`
+                                        : MissingSkillIcon
+                                    }
                                     alt="Missing Skill Icon"
                                   />
                                   <span className="w-full overflow-hidden text-ellipsis whitespace-nowrap">

@@ -1,24 +1,29 @@
-export class CharacterAbility {
-  skillName: string;
-  isActive: boolean;
-  points: number;
-  isUnlocked: boolean;
-  additionalPoints: number;
-  skillIndex: number;
+import { SKILLS_TREE } from '@shared/constants/skills';
 
-  constructor(
-    skillName: string,
-    isActive: boolean,
-    points: number,
-    isUnlocked: boolean,
-    additionalPoints: number,
-    skillIndex: number,
-  ) {
-    this.skillName = skillName;
-    this.isActive = isActive;
-    this.points = points;
-    this.isUnlocked = isUnlocked;
-    this.additionalPoints = additionalPoints;
-    this.skillIndex = skillIndex;
+export class CharacterAbility {
+  skillId: string;
+  isActive: boolean;
+  isLocked: boolean;
+  skillName: string;
+  iconPath?: string;
+  category?: string;
+  tier?: number;
+  immutable: boolean = false;
+
+  constructor(skillId: string, isActive: boolean, isLocked: boolean) {
+    this.skillId = skillId;
+    this.isActive = !!isActive;
+    this.isLocked = !!isLocked;
+
+    const skill = SKILLS_TREE[skillId];
+    this.skillName = skill?.name || skillId;
+    if (skill) {
+      if (skill.category === 'Basic Skills') {
+        this.immutable = true;
+      }
+      this.iconPath = skill.icon;
+      this.category = skill.category;
+      this.tier = skill.tier;
+    }
   }
 }

@@ -3,23 +3,30 @@ import { CharactersTree } from '@shared/entities/CharactersTree';
 
 import { FormSchema } from './Form';
 
-export const BrowserApis = ['getSaves', 'openFileDialog', 'getCharacterSaveData', 'newSave'];
-
-type GetSaves = (path?: string) => Promise<{ saves: CharactersTree[]; path: string }>;
-type GetCharacterSaveData = (
-  saveRootDir: string,
-  charDir: string,
-  saveName: string,
-) => Promise<CharacterData>;
-type NewSave = (
-  saveRootDir: string,
-  charDir: string,
-  saveName: string,
-  data: FormSchema,
-) => Promise<boolean>;
+export const BrowserApis = [
+  'getSaves',
+  'openFileDialog',
+  'getCharacterSaveData',
+  'newSave',
+  'unlockSkills',
+];
 export interface IBrowserApi {
-  getSaves: GetSaves;
+  getSaves: (path?: string) => Promise<{ saves: CharactersTree[]; path: string }>;
+
   openFileDialog: () => Promise<string | null>;
-  getCharacterSaveData: GetCharacterSaveData;
-  newSave: NewSave;
+
+  getCharacterSaveData: (
+    saveRootDir: string,
+    charDir: string,
+    saveName: string,
+  ) => Promise<CharacterData>;
+
+  newSave: (
+    saveRootDir: string,
+    charDir: string,
+    saveName: string,
+    data: FormSchema,
+  ) => Promise<boolean>;
+
+  unlockSkills: (saveRootDir: string, charDir: string, saveName: string) => Promise<boolean>;
 }
