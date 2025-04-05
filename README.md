@@ -4,31 +4,33 @@ An Electron application with React and TypeScript
 
 ## Recommended IDE Setup
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-
 ## Project Setup
 
 ### Install
 
+- WSL Config
+  - sudo apt install -y libnss3
+  - sudo apt install libasound2t64
+
 ```bash
-$ yarn
+$ npm install
 ```
 
 ### Development
 
 ```bash
-$ yarn dev
+$ npm run dev
 ```
 
 ### Build
 
 ```bash
 # For windows
-$ yarn build:win
+$ npm run build:win
 
 # For macOS
-$ yarn build:mac
+$ npm run build:mac
 
 # For Linux
-$ yarn build:linux
+$ npm run build:linux
 ```

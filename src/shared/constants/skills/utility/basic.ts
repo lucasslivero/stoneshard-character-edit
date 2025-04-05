@@ -17,6 +17,6 @@ export const BASIC_SKILLS_TREE = {
     name: 'Craft',
     category: CATEGORY,
     tier: 1,
-    icon: null,
+    icon: 'basic/Craft.png',
   },
 };

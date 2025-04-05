@@ -3,6 +3,15 @@ interface ISkillsDataMap {
   skillsPanelDataList: unknown[];
 }
 
+export interface IBodyParts {
+  head: number;
+  tors: number;
+  rhand: number;
+  lhand: number;
+  rlegs: number;
+  legs: number;
+}
+
 export interface ICharacterDataMap {
   Strength15: number;
   Sanity: number;
@@ -48,7 +57,7 @@ export interface ICharacterDataMap {
   TombRaiderGraves: number;
   checkpointLocation: string;
   groundLevel: number;
-  Body: Body;
+  Body: IBodyParts;
   localX: number;
   bSavvy: number;
   Fatigue: number;

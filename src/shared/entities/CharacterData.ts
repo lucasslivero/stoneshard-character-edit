@@ -1,4 +1,4 @@
-import { ICharacterSaveFile } from '@shared/types/CharacterDataFile';
+import { IBodyParts, ICharacterSaveFile } from '@shared/types/CharacterDataFile';
 
 import { CharacterAbility } from './CharacterAbility';
 import { CharacterStatus } from './CharacterStatus';
@@ -7,8 +7,17 @@ export class CharacterData {
   status: CharacterStatus;
   gameTime: string;
   abilities: CharacterAbility[] = [];
+  body: IBodyParts;
 
   constructor(data: ICharacterSaveFile) {
+    this.body = {
+      head: Math.trunc(data.characterDataMap.Body.head),
+      tors: Math.trunc(data.characterDataMap.Body.tors),
+      rhand: Math.trunc(data.characterDataMap.Body.rhand),
+      lhand: Math.trunc(data.characterDataMap.Body.lhand),
+      rlegs: Math.trunc(data.characterDataMap.Body.rlegs),
+      legs: Math.trunc(data.characterDataMap.Body.legs),
+    };
     this.status = new CharacterStatus(data.characterDataMap);
     this.gameTime = [
       `${data.timeDataMap.months}M`,

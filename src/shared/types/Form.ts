@@ -22,6 +22,14 @@ export const formSchema = z.object({
       immutable: z.boolean(),
     }),
   ),
+  body: z.object({
+    head: z.number().min(0).max(100),
+    tors: z.number().min(0).max(100),
+    rhand: z.number().min(0).max(100),
+    lhand: z.number().min(0).max(100),
+    rlegs: z.number().min(0).max(100),
+    legs: z.number().min(0).max(100),
+  }),
 });
 
 export type FormSchema = z.infer<typeof formSchema>;

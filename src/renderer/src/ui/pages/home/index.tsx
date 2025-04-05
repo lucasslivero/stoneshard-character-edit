@@ -1,4 +1,5 @@
 import { Fragment, useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import charactersImages from '@assets/characters';
 import { CharacterSave } from '@shared/entities/CharacterSave';
@@ -34,6 +35,7 @@ export function Home() {
   const getSaves = useCallback(async (dirPath?: string) => {
     const data = await window.api.getSaves(dirPath);
     if (!data) {
+      toast.error('Saves directory is invalid !');
       return;
     }
     setCharacters(data.saves);

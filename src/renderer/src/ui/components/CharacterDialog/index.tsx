@@ -4,11 +4,14 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
+import { cn } from '@app/libs/utils';
+import HealingAllIcon from '@assets/Gwynnels_Elixir.png';
 import MissingSkillIcon from '@assets/skills/missing.png';
 import { CharacterAbility } from '@shared/entities/CharacterAbility';
 import { CharacterData } from '@shared/entities/CharacterData';
 import { CharacterSave } from '@shared/entities/CharacterSave';
 import { CharactersTree } from '@shared/entities/CharactersTree';
+import { IBodyParts } from '@shared/types/CharacterDataFile';
 import { formSchema, FormSchema } from '@shared/types/Form';
 
 import { Button } from '../ui/button';
@@ -18,7 +21,7 @@ import { Input } from '../ui/input';
 import { ScrollArea } from '../ui/scroll-area';
 import { Separator } from '../ui/separator';
 
-const STATUS_FORM: { key: keyof Omit<FormSchema, 'abilities'>; label: string }[] = [
+const STATUS_FORM: { key: keyof Omit<FormSchema, 'abilities' | 'body'>; label: string }[] = [
   { key: 'strength', label: 'strength' },
   { key: 'agility', label: 'agility' },
   { key: 'perception', label: 'perception' },
@@ -59,6 +62,14 @@ export function CharacterDialog({
       abilityPoints: characterData?.status.abilityPoints || 0,
       statsPoints: characterData?.status.statsPoints || 0,
       abilities: characterData?.abilities.filter((ability) => ability.isActive) || [],
+      body: characterData?.body || {
+        head: 0,
+        tors: 0,
+        rhand: 0,
+        lhand: 0,
+        rlegs: 0,
+        legs: 0,
+      },
     },
   });
   const abilities = useFieldArray({
@@ -85,6 +96,18 @@ export function CharacterDialog({
     if (modalState === false) {
       onClose(null, null, false);
     }
+  }
+
+  function restoreBody() {
+    const bodyRestored: IBodyParts = {
+      head: 100,
+      tors: 100,
+      rhand: 100,
+      lhand: 100,
+      rlegs: 100,
+      legs: 100,
+    };
+    form.setValue('body', bodyRestored, { shouldDirty: true });
   }
 
   async function onSubmit(data: FormSchema) {
@@ -117,7 +140,7 @@ export function CharacterDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="flex h-full w-full max-w-none flex-col gap-3 p-3">
+      <DialogContent className="flex h-full w-full max-w-none flex-col gap-3 p-1">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -150,44 +173,231 @@ export function CharacterDialog({
                     </div>
                   </div>
                 </div>
-                <div className="flex h-auto w-full gap-2 overflow-hidden border">
-                  <div className="flex w-1/3 flex-col gap-2 px-1 pb-2">
+                <div className="flex h-auto w-full gap-1.5 overflow-hidden border">
+                  <div className="flex w-1/3 flex-col gap-2">
                     <div className="flex items-center justify-between border-b">
                       Stats
                       <Button
                         className="h-5 w-auto p-0 px-1 text-sm"
                         variant="secondary"
                         type="button"
-                        onClick={() => STATUS_FORM.forEach((item) => form.resetField(item.key))}
+                        onClick={() => {
+                          STATUS_FORM.forEach((item) => form.resetField(item.key));
+                          form.resetField('body');
+                        }}
                       >
                         Reset
                       </Button>
                     </div>
-                    {STATUS_FORM.map((item) => (
-                      <FormField
-                        key={item.key}
-                        control={form.control}
-                        name={item.key}
-                        render={({ field }) => (
-                          <FormItem className="flex flex-col content-center">
-                            <div className="flex items-center justify-between gap-1">
-                              <FormLabel className="w-28 content-center capitalize">
-                                {item.label}
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  className="h-9 w-28"
-                                  {...field}
-                                  onChange={(event) => field.onChange(Number(event.target.value))}
-                                />
-                              </FormControl>
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    ))}
+                    <ScrollArea className="h-full w-full">
+                      <div className="flex flex-col gap-2 px-1 pb-2">
+                        {STATUS_FORM.map((item) => (
+                          <FormField
+                            key={item.key}
+                            control={form.control}
+                            name={item.key}
+                            render={({ field }) => (
+                              <FormItem className="flex flex-col content-center">
+                                <div className="flex items-center justify-between gap-1">
+                                  <FormLabel className="w-28 content-center capitalize">
+                                    {item.label}
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      className="h-9 w-28"
+                                      {...field}
+                                      onChange={(event) =>
+                                        field.onChange(Number(event.target.value))
+                                      }
+                                    />
+                                  </FormControl>
+                                </div>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        ))}
+                      </div>
+                      <div className="mt-3 flex items-end justify-center gap-1 text-center font-bold">
+                        Body Parts
+                        <Button
+                          className="h-14 w-auto border-0"
+                          variant="outline"
+                          size="icon"
+                          type="button"
+                          onClick={restoreBody}
+                        >
+                          <img
+                            src={HealingAllIcon}
+                            className="h-14 cursor-pointer"
+                            alt="Button to heal body part"
+                          />
+                        </Button>
+                      </div>
+                      <div className="flex w-full gap-1 text-center">
+                        <div className="flex w-1/3 flex-col gap-1 pr-1">
+                          <div className="flex flex-col gap-1">
+                            <span className="whitespace-nowrap">Head</span>
+                            <FormField
+                              control={form.control}
+                              name="body.head"
+                              render={({ field }) => (
+                                <div className="relative m-0.5 flex rounded ring ring-ring">
+                                  <span
+                                    className={cn(
+                                      'h-6 rounded bg-green-500',
+                                      field.value < 100 && 'bg-yellow-500',
+                                      field.value <= 70 && 'bg-orange-500',
+                                      field.value <= 45 && 'bg-red-500',
+                                    )}
+                                    style={{
+                                      width: `${field.value}%`,
+                                    }}
+                                  />
+                                  <span className="absolute flex w-full justify-center">
+                                    {field.value} %
+                                  </span>
+                                </div>
+                              )}
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <span className="whitespace-nowrap">Torso</span>
+                            <FormField
+                              control={form.control}
+                              name="body.tors"
+                              render={({ field }) => (
+                                <div className="relative m-0.5 flex rounded ring ring-ring">
+                                  <span
+                                    className={cn(
+                                      'h-6 rounded bg-green-500',
+                                      field.value < 100 && 'bg-yellow-500',
+                                      field.value <= 70 && 'bg-orange-500',
+                                      field.value <= 45 && 'bg-red-500',
+                                    )}
+                                    style={{
+                                      width: `${field.value}%`,
+                                    }}
+                                  />
+                                  <span className="absolute flex w-full justify-center">
+                                    {field.value} %
+                                  </span>
+                                </div>
+                              )}
+                            />
+                          </div>
+                        </div>
+                        <div className="flex w-1/3 flex-col gap-1 pr-1">
+                          <div className="flex flex-col gap-1">
+                            <span className="whitespace-nowrap">R. Hand</span>
+                            <FormField
+                              control={form.control}
+                              name="body.rhand"
+                              render={({ field }) => (
+                                <div className="relative m-0.5 flex rounded ring ring-ring">
+                                  <span
+                                    className={cn(
+                                      'h-6 rounded bg-green-500',
+                                      field.value < 100 && 'bg-yellow-500',
+                                      field.value <= 70 && 'bg-orange-500',
+                                      field.value <= 45 && 'bg-red-500',
+                                    )}
+                                    style={{
+                                      width: `${field.value}%`,
+                                    }}
+                                  />
+                                  <span className="absolute flex w-full justify-center">
+                                    {field.value} %
+                                  </span>
+                                </div>
+                              )}
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <span className="whitespace-nowrap">L. Hand</span>
+                            <FormField
+                              control={form.control}
+                              name="body.lhand"
+                              render={({ field }) => (
+                                <div className="relative m-0.5 flex rounded ring ring-ring">
+                                  <span
+                                    className={cn(
+                                      'h-6 rounded bg-green-500',
+                                      field.value < 100 && 'bg-yellow-500',
+                                      field.value <= 70 && 'bg-orange-500',
+                                      field.value <= 45 && 'bg-red-500',
+                                    )}
+                                    style={{
+                                      width: `${field.value}%`,
+                                    }}
+                                  />
+                                  <span className="absolute flex w-full justify-center">
+                                    {field.value} %
+                                  </span>
+                                </div>
+                              )}
+                            />
+                          </div>
+                        </div>
+                        <div className="flex w-1/3 flex-col gap-1 pr-1">
+                          <div className="flex flex-col gap-1">
+                            <span className="whitespace-nowrap">R. Leg</span>
+                            <FormField
+                              control={form.control}
+                              name="body.rlegs"
+                              render={({ field }) => (
+                                <div className="relative m-0.5 flex rounded ring ring-ring">
+                                  <span
+                                    className={cn(
+                                      'h-6 rounded bg-green-500',
+                                      field.value < 100 && 'bg-yellow-500',
+                                      field.value <= 70 && 'bg-orange-500',
+                                      field.value <= 45 && 'bg-red-500',
+                                    )}
+                                    style={{
+                                      width: `${field.value}%`,
+                                    }}
+                                  />
+                                  <span className="absolute flex w-full justify-center">
+                                    {field.value} %
+                                  </span>
+                                </div>
+                              )}
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <span className="whitespace-nowrap">L. Leg</span>
+                            <FormField
+                              control={form.control}
+                              name="body.legs"
+                              render={({ field }) => (
+                                <div className="relative m-0.5 flex rounded ring ring-ring">
+                                  <span
+                                    className={cn(
+                                      'h-6 rounded bg-green-500',
+                                      field.value < 100 && 'bg-yellow-500',
+                                      field.value <= 70 && 'bg-orange-500',
+                                      field.value <= 45 && 'bg-red-500',
+                                    )}
+                                    style={{
+                                      width: `${field.value}%`,
+                                    }}
+                                  />
+                                  <span className="absolute flex w-full justify-center">
+                                    {field.value} %
+                                  </span>
+                                </div>
+                              )}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-6 text-center font-bold">Buffs / Debuffs</div>
+                      <div className="flex gap-1 text-center">
+                        <span className="text-muted-foreground">To be implemented.</span>
+                      </div>
+                    </ScrollArea>
                   </div>
                   <Separator orientation="vertical" className="h-auto w-1" />
                   <div className="flex w-2/3 flex-col">
