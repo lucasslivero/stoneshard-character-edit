@@ -14,10 +14,13 @@ import { FileManager } from './FileManager';
 
 const DEFAULT_CHARACTER_PATH_NAME = 'characters_v1';
 
-async function getSaves(path: string) {
+async function getSaves(path: string | null, isWsl: boolean) {
   let mainPath = '';
   if (!path) {
-    if (platform() === 'linux') {
+    if (isWsl) {
+      const userPath = process.env.WUSER;
+      mainPath = resolve(userPath ?? '', 'AppData', 'Local', 'StoneShard');
+    } else if (platform() === 'linux') {
       mainPath = resolve(homedir(), '.config', 'StoneShard');
     } else {
       mainPath = resolve(homedir(), 'AppData', 'Local', 'StoneShard');

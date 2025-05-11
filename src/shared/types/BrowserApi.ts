@@ -11,7 +11,10 @@ export const BrowserApis = [
   'unlockSkills',
 ];
 export interface IBrowserApi {
-  getSaves: (path?: string) => Promise<{ saves: CharactersTree[]; path: string }>;
+  getSaves: (
+    path: string | null,
+    isWsl: boolean,
+  ) => Promise<{ saves: CharactersTree[]; path: string }>;
 
   openFileDialog: () => Promise<string | null>;
 

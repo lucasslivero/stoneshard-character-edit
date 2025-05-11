@@ -14,10 +14,12 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components/ui/avatar';
 import { Badge } from '@ui/components/ui/badge';
 import { Button } from '@ui/components/ui/button';
+import { Checkbox } from '@ui/components/ui/checkbox';
 import { ScrollArea } from '@ui/components/ui/scroll-area';
 import { Separator } from '@ui/components/ui/separator';
 
 export function Home() {
+  const [isWsl, setIsWsl] = useState(false);
   const [savesDirPath, setSavesDirPath] = useState<string>('');
   const [characters, setCharacters] = useState<CharactersTree[]>([]);
   const [activatedSave, setActivatedSave] = useState<{
@@ -32,8 +34,8 @@ export function Home() {
     open: false,
   });
 
-  const getSaves = useCallback(async (dirPath?: string) => {
-    const data = await window.api.getSaves(dirPath);
+  const getSaves = useCallback(async (dirPath: string | null, wsl: boolean) => {
+    const data = await window.api.getSaves(dirPath ?? null, wsl);
     if (!data) {
       toast.error('Saves directory is invalid !');
       return;
@@ -45,7 +47,7 @@ export function Home() {
   async function handleOpenSaves() {
     const dirPath = await window.api.openFileDialog();
     if (dirPath) {
-      getSaves(dirPath);
+      getSaves(dirPath, isWsl);
     }
   }
 
@@ -62,9 +64,13 @@ export function Home() {
     });
   }
 
+  async function searchOnWindows(state: boolean) {
+    setIsWsl(state);
+  }
+
   useEffect(() => {
-    getSaves();
-  }, [getSaves]);
+    getSaves(null, isWsl);
+  }, [getSaves, isWsl]);
 
   return (
     <div className="flex h-full w-full flex-col gap-2 rounded-lg border border-black p-4 dark:border-white">
@@ -77,6 +83,16 @@ export function Home() {
         <Button type="button" onClick={handleOpenSaves}>
           Open all saves
         </Button>
+
+        <div className="flex items-center space-x-2">
+          <Checkbox checked={isWsl} onCheckedChange={searchOnWindows} id="wsl" />
+          <label
+            htmlFor="wsl"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            wsl
+          </label>
+        </div>
       </div>
       <div className="flex h-full w-full gap-2 overflow-hidden">
         <div className="flex w-full flex-col gap-2">
