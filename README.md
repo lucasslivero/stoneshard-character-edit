@@ -9,17 +9,16 @@ An Electron application with React and TypeScript
 ### Install
 
 - WSL Config
-  - sudo apt install -y libnss3
-  - sudo apt install libasound2t64
+  - sudo apt install -y libnss3 libasound2t64
 
 ```bash
-$ npm install
+npm install
 ```
 
 ### Development
 
 ```bash
-$ npm run dev
+npm run dev
 ```
 
 ### Build

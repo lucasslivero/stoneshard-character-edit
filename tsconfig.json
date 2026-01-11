@@ -1,15 +1,15 @@
 {
   "files": [],
-  "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tsconfig.web.json" }],
+  "references": [{ "path": "./tsconfig.main.json" }, { "path": "./tsconfig.renderer.json" }],
   "compilerOptions": {
     "baseUrl": ".",
-    "target": "ESNext",
+    "target": "esnext",
     "paths": {
       "@shared/*": ["src/shared/*"],
-      "@ui/*": ["src/renderer/src/ui/*"],
-      "@shadcn/*": ["src/renderer/src/ui/components/ui/*"],
-      "@app/*": ["src/renderer/src/app/*"],
-      "@assets/*": ["src/renderer/src/assets/*"],
+      "@app/*": ["src/renderer/app/*"],
+      "@assets/*": ["src/renderer/assets/*"],
+      "@ui/*": ["src/renderer/ui/*"],
+      "@shadcn/*": ["src/renderer/ui/components/ui/*"]
     }
   }
 }

@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ipcRenderer } from 'electron';
-
-import { BrowserApis } from '@shared/types/BrowserApi';
+/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
+import { BrowserApis } from "@shared/types/BrowserApi";
+import { ipcRenderer } from "electron";
 
 type ApiFromHandlers<T extends Record<string, (...args: any[]) => any>> = {
   [K in keyof T]: (

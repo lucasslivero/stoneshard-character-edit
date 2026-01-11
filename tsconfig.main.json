@@ -1,0 +1,27 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["esnext"],
+    "sourceMap": false,
+    "strict": true,
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "noEmit": true,
+    "composite": true,
+    "types": ["node"],
+    "skipLibCheck": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": false,
+    "noImplicitReturns": true
+  },
+  "include": [
+    "src/main/**/*",
+    "src/preload/**/*",
+    "src/shared/**/*",
+    "forge.env.d.ts"
+  ],
+  "exclude": ["src/renderer/**/*"]
+}

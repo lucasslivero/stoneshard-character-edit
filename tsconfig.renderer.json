@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "composite": true,
+    "types": ["node"],
+
+    /* React specific */
+    "allowJs": false,
+    "checkJs": false,
+
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitAny": false,
+    "noImplicitReturns": true
+  },
+  "include": ["src/renderer/**/*", "src/shared/**/*", "src/preload/*.d.ts", "src/renderer/*.d.ts"],
+  "exclude": ["src/main/**/*"]
+}
