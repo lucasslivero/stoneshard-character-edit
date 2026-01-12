@@ -1,14 +1,14 @@
-import { CharacterData } from '@shared/entities/CharacterData';
-import { CharactersTree } from '@shared/entities/CharactersTree';
+import type { CharacterData } from "@shared/entities/CharacterData";
+import type { CharactersTree } from "@shared/entities/CharactersTree";
 
-import { FormSchema } from './Form';
+import type { FormSchema } from "./Form";
 
 export const BrowserApis = [
-  'getSaves',
-  'openFileDialog',
-  'getCharacterSaveData',
-  'newSave',
-  'unlockSkills',
+  "getSaves",
+  "openFileDialog",
+  "getCharacterSaveData",
+  "newSave",
+  "unlockSkills",
 ];
 export interface IBrowserApi {
   getSaves: (

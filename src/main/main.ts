@@ -15,7 +15,6 @@ if (started) {
   app.quit();
 }
 
-// Register scheme BEFORE app is ready
 protocol.registerSchemesAsPrivileged([
   {
     scheme: "app",
