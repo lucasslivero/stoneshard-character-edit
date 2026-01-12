@@ -19,6 +19,6 @@
     "noImplicitAny": false,
     "noImplicitReturns": true
   },
-  "include": ["src/renderer/**/*", "src/shared/**/*", "src/preload/*.d.ts", "src/renderer/*.d.ts"],
+  "include": ["src/renderer/**/*", "src/shared/**/*", "src/preload/*.d.ts", "public/**/*"],
   "exclude": ["src/main/**/*"]
 }

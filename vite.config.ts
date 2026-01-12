@@ -5,5 +5,4 @@ export const aliases = {
   "@ui": resolve("src/renderer/ui"),
   "@shadcn": resolve("src/renderer/ui/components/ui"),
   "@app": resolve("src/renderer/app"),
-  "@assets": resolve("src/renderer/assets"),
 };

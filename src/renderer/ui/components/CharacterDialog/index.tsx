@@ -1,6 +1,4 @@
 import { cn } from "@app/libs/utils";
-import HealingAllIcon from "@assets/Gwynnels_Elixir.png";
-import MissingSkillIcon from "@assets/skills/missing.png";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CharacterAbility } from "@shared/entities/CharacterAbility";
 import type { CharacterData } from "@shared/entities/CharacterData";
@@ -233,7 +231,7 @@ export function CharacterDialog({
                           onClick={restoreBody}
                         >
                           <img
-                            src={HealingAllIcon}
+                            src="app://assets/Gwynnels_Elixir.png"
                             className="h-14 cursor-pointer"
                             alt="Button to heal body part"
                           />
@@ -458,8 +456,8 @@ export function CharacterDialog({
                                     className="h-9 w-9"
                                     src={
                                       ability.iconPath
-                                        ? `src/renderer/assets/skills/${ability.iconPath}`
-                                        : MissingSkillIcon
+                                        ? `app://assets/skills/${ability.iconPath}`
+                                        : "app://assets/skills/missing.png"
                                     }
                                     alt="Missing Skill Icon"
                                   />
@@ -500,8 +498,8 @@ export function CharacterDialog({
                                     className="h-9 w-9"
                                     src={
                                       ability.iconPath
-                                        ? `src/renderer/assets/skills/${ability.iconPath}`
-                                        : MissingSkillIcon
+                                        ? `app://assets/skills/${ability.iconPath}`
+                                        : "app://assets/skills/missing.png"
                                     }
                                     alt="Missing Skill Icon"
                                   />

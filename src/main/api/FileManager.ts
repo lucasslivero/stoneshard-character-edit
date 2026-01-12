@@ -1,8 +1,7 @@
-import { readFileSync } from 'fs';
-import { createHash } from 'node:crypto';
-import { cpSync, writeFileSync } from 'node:fs';
-import path from 'node:path';
-import { deflateSync, inflateSync } from 'node:zlib';
+import { createHash } from "node:crypto";
+import { cpSync, readFileSync, writeFileSync } from "node:fs";
+import path from "node:path";
+import { deflateSync, inflateSync } from "node:zlib";
 
 export class FileManager {
   static readFile(pathStr: string) {
@@ -11,11 +10,11 @@ export class FileManager {
       return null;
     }
     const inflateFile = inflateSync(new Uint8Array(file));
-    const FileDecoded = new TextDecoder('utf8').decode(inflateFile);
+    const FileDecoded = new TextDecoder("utf8").decode(inflateFile);
     const regex = /(?<content>{.*})(?<hash>.*)/gs;
     const regexResult = regex.exec(FileDecoded);
     const fileContent = regexResult?.groups?.content;
-    return fileContent || '';
+    return fileContent || "";
   }
 
   static excelDateToJSDate(excelDate: number) {
@@ -40,8 +39,8 @@ export class FileManager {
     const characterSaveFolder = pathParts[pathParts.length - 2];
     const salt: string = `stOne!characters_v1!${characterFolder}!${characterSaveFolder}!shArd`;
 
-    const md5Input = Buffer.from(content + salt, 'utf8');
-    const md5Hash = createHash('md5').update(md5Input).digest('hex');
+    const md5Input = Buffer.from(content + salt, "utf8");
+    const md5Hash = createHash("md5").update(md5Input).digest("hex");
 
     return md5Hash;
   }
@@ -50,7 +49,7 @@ export class FileManager {
     const pathParts: string[] = pathStr.split(path.sep);
 
     let content = fileContent;
-    content += this.calcMD5(content, pathParts);
+    content += FileManager.calcMD5(content, pathParts);
     try {
       // file written successfully
       const deflate = deflateSync(new TextEncoder().encode(content));

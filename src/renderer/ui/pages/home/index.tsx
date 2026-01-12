@@ -1,4 +1,3 @@
-import charactersImages from "@assets/characters";
 import type { CharacterSave } from "@shared/entities/CharacterSave";
 import type { CharactersTree } from "@shared/entities/CharactersTree";
 import { CharacterDialog } from "@ui/components/CharacterDialog";
@@ -103,7 +102,9 @@ export function Home() {
                     <div className="flex w-full justify-between">
                       <div className="flex items-center gap-2 pl-2">
                         <Avatar>
-                          <AvatarImage src={charactersImages[character.charName.toLowerCase()]} />
+                          <AvatarImage
+                            src={`app://assets/characters/${character.charName.toLowerCase()}.png`}
+                          />
                           <AvatarFallback>{character.charName.charAt(0)}</AvatarFallback>
                         </Avatar>
                         {character.charName}
@@ -122,7 +123,7 @@ export function Home() {
                           >
                             <img
                               className="h-20 w-40"
-                              src={`atom://${savesDirPath}${save.path}preview.png`}
+                              src={`app://${encodeURIComponent(`${savesDirPath}${save.path}preview.png`)}`}
                               alt="StoneShard save last location preview"
                             />
                             <div className="flex h-full w-full flex-col gap-2">

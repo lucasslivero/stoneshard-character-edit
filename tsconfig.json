@@ -7,7 +7,6 @@
     "paths": {
       "@shared/*": ["src/shared/*"],
       "@app/*": ["src/renderer/app/*"],
-      "@assets/*": ["src/renderer/assets/*"],
       "@ui/*": ["src/renderer/ui/*"],
       "@shadcn/*": ["src/renderer/ui/components/ui/*"]
     }

@@ -1,11 +1,12 @@
 {
   "name": "stoneshard-character-edit",
   "version": "1.0.0",
-  "description": "",
+  "description": "Stoneshard application to edit your character abilities.",
   "author": {
     "name": "Lucas Livero",
     "email": "lucasilvestre1@gmail.com"
   },
+  "license": "MIT",
   "main": ".vite/build/main.js",
   "type": "module",
   "scripts": {
