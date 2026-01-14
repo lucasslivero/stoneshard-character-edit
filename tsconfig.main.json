@@ -17,11 +17,6 @@
     "noImplicitAny": false,
     "noImplicitReturns": true
   },
-  "include": [
-    "src/main/**/*",
-    "src/preload/**/*",
-    "src/shared/**/*",
-    "forge.env.d.ts"
-  ],
+  "include": ["src/main/**/*", "src/preload/**/*", "src/shared/**/*", "forge.env.d.ts"],
   "exclude": ["src/renderer/**/*"]
 }

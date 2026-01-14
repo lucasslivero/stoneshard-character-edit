@@ -1,35 +1,9 @@
-import type { CharacterData } from "@shared/entities/CharacterData";
-import type { CharactersTree } from "@shared/entities/CharactersTree";
+import type * as ipcHandlers from "./../../main/api/api";
 
-import type { FormSchema } from "./Form";
+type MainApiInterface = typeof ipcHandlers;
+type customApi = {
+  locale: string;
+};
 
-export const BrowserApis = [
-  "getSaves",
-  "openFileDialog",
-  "getCharacterSaveData",
-  "newSave",
-  "unlockSkills",
-];
-export interface IBrowserApi {
-  getSaves: (
-    path: string | null,
-    isWsl: boolean,
-  ) => Promise<{ saves: CharactersTree[]; path: string }>;
-
-  openFileDialog: () => Promise<string | null>;
-
-  getCharacterSaveData: (
-    saveRootDir: string,
-    charDir: string,
-    saveName: string,
-  ) => Promise<CharacterData>;
-
-  newSave: (
-    saveRootDir: string,
-    charDir: string,
-    saveName: string,
-    data: FormSchema,
-  ) => Promise<boolean>;
-
-  unlockSkills: (saveRootDir: string, charDir: string, saveName: string) => Promise<boolean>;
-}
+export type IBrowserApi = MainApiInterface & customApi;
+export type ApiKeys = keyof MainApiInterface;

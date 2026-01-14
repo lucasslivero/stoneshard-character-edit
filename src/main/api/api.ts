@@ -1,33 +1,31 @@
-import { existsSync, readdirSync, statSync } from 'fs';
-import { homedir, platform } from 'os';
-import { join, resolve, sep } from 'path';
+import { existsSync, readdirSync, statSync } from "node:fs";
+import { homedir, platform } from "node:os";
+import { join, resolve, sep } from "node:path";
+import { CharacterData } from "@shared/entities/CharacterData";
+import { CharacterSave } from "@shared/entities/CharacterSave";
+import { CharactersTree } from "@shared/entities/CharactersTree";
+import type { ICharacterSaveFile } from "@shared/types/CharacterDataFile";
+import type { FormSchema } from "@shared/types/Form";
+import { dialog } from "electron";
 
-import { dialog } from 'electron';
+import { FileManager } from "./FileManager";
 
-import { CharacterData } from '@shared/entities/CharacterData';
-import { CharacterSave } from '@shared/entities/CharacterSave';
-import { CharactersTree } from '@shared/entities/CharactersTree';
-import { ICharacterSaveFile } from '@shared/types/CharacterDataFile';
-import { FormSchema } from '@shared/types/Form';
+const DEFAULT_CHARACTER_PATH_NAME = "characters_v1";
 
-import { FileManager } from './FileManager';
-
-const DEFAULT_CHARACTER_PATH_NAME = 'characters_v1';
-
-async function getSaves(path: string | null, isWsl: boolean) {
-  let mainPath = '';
+export async function getSaves(path: string | null, isWsl: boolean) {
+  let mainPath = "";
   if (!path) {
     if (isWsl) {
       const userPath = process.env.WUSER;
-      mainPath = resolve(userPath ?? '', 'AppData', 'Local', 'StoneShard');
-    } else if (platform() === 'linux') {
-      mainPath = resolve(homedir(), '.config', 'StoneShard');
+      mainPath = resolve(userPath ?? "", "AppData", "Local", "StoneShard");
+    } else if (platform() === "linux") {
+      mainPath = resolve(homedir(), ".config", "StoneShard");
     } else {
-      mainPath = resolve(homedir(), 'AppData', 'Local', 'StoneShard');
+      mainPath = resolve(homedir(), "AppData", "Local", "StoneShard");
     }
   } else {
     const splitPath = path.split(sep);
-    const rootPathIndex = splitPath.indexOf('StoneShard');
+    const rootPathIndex = splitPath.indexOf("StoneShard");
     if (rootPathIndex !== -1) {
       mainPath = resolve(splitPath.slice(0, rootPathIndex + 1).join(sep));
     }
@@ -43,11 +41,11 @@ async function getSaves(path: string | null, isWsl: boolean) {
   }
 
   const charactersTree: CharactersTree[] = [];
-  const allCharacters = readdirSync(characterPath).filter((item) => !item.includes('.'));
+  const allCharacters = readdirSync(characterPath).filter((item) => !item.includes("."));
   allCharacters.forEach((characterDir) => {
     const characterAllSaves = readdirSync(join(characterPath, characterDir));
     const characterInfoPath = characterAllSaves.splice(
-      characterAllSaves.indexOf('character.map'),
+      characterAllSaves.indexOf("character.map"),
       1,
     )[0];
     const charPath = join(characterPath, characterDir, characterInfoPath);
@@ -66,7 +64,7 @@ async function getSaves(path: string | null, isWsl: boolean) {
     );
 
     characterAllSaves.forEach((saveDir) => {
-      const savePath = join(characterPath, characterDir, saveDir, 'save.map');
+      const savePath = join(characterPath, characterDir, saveDir, "save.map");
       const saveContent = FileManager.readFile(savePath);
       if (!saveContent) {
         return;
@@ -90,9 +88,9 @@ async function getSaves(path: string | null, isWsl: boolean) {
   return { saves: charactersTree, path: mainPath };
 }
 
-async function openFileDialog() {
+export async function openFileDialog() {
   const response = await dialog.showOpenDialog({
-    properties: ['openDirectory', 'showHiddenFiles'],
+    properties: ["openDirectory", "showHiddenFiles"],
   });
   if (response.canceled) {
     return null;
@@ -101,8 +99,8 @@ async function openFileDialog() {
   return response.filePaths[0];
 }
 
-async function getCharacterSaveData(saveRootDir: string, charDir: string, saveName: string) {
-  const path = join(saveRootDir, DEFAULT_CHARACTER_PATH_NAME, charDir, saveName, 'data.sav');
+export async function getCharacterSaveData(saveRootDir: string, charDir: string, saveName: string) {
+  const path = join(saveRootDir, DEFAULT_CHARACTER_PATH_NAME, charDir, saveName, "data.sav");
   const content = FileManager.readFile(path);
   if (!content) {
     return null;
@@ -132,8 +130,13 @@ function modifyData(fileContent: string, data: FormSchema): string {
   return JSON.stringify(characterData);
 }
 
-async function newSave(saveRootDir: string, charDir: string, saveName: string, data: FormSchema) {
-  const path = join(saveRootDir, DEFAULT_CHARACTER_PATH_NAME, charDir, saveName, 'data.sav');
+export async function newSave(
+  saveRootDir: string,
+  charDir: string,
+  saveName: string,
+  data: FormSchema,
+) {
+  const path = join(saveRootDir, DEFAULT_CHARACTER_PATH_NAME, charDir, saveName, "data.sav");
   const content = FileManager.readFile(path);
   if (!content) {
     return false;
@@ -143,8 +146,8 @@ async function newSave(saveRootDir: string, charDir: string, saveName: string, d
   return success;
 }
 
-async function unlockSkills(saveRootDir: string, charDir: string, saveName: string) {
-  const path = join(saveRootDir, DEFAULT_CHARACTER_PATH_NAME, charDir, saveName, 'data.sav');
+export async function unlockSkills(saveRootDir: string, charDir: string, saveName: string) {
+  const path = join(saveRootDir, DEFAULT_CHARACTER_PATH_NAME, charDir, saveName, "data.sav");
   const content = FileManager.readFile(path);
   if (!content) {
     return false;
@@ -157,5 +160,3 @@ async function unlockSkills(saveRootDir: string, charDir: string, saveName: stri
   const success = await FileManager.saveFile(newFileContent, path);
   return success;
 }
-
-export { getCharacterSaveData, getSaves, newSave, openFileDialog, unlockSkills };

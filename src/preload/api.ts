@@ -1,6 +1,14 @@
-/** biome-ignore-all lint/suspicious/noExplicitAny: <explanation> */
-import { BrowserApis } from "@shared/types/BrowserApi";
+/** biome-ignore-all lint/suspicious/noExplicitAny: <Generic functions to automated communication> */
 import { ipcRenderer } from "electron";
+import type { ApiKeys } from "../shared/types/BrowserApi";
+
+const BrowserApis: ApiKeys[] = [
+  "getSaves",
+  "openFileDialog",
+  "getCharacterSaveData",
+  "newSave",
+  "unlockSkills",
+];
 
 type ApiFromHandlers<T extends Record<string, (...args: any[]) => any>> = {
   [K in keyof T]: (
